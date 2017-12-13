@@ -37,7 +37,7 @@ void led_count_Pulse(unsigned long pulse_count_time, unsigned int pulse_count){ 
 
 void loop() {
   do{
-    ledPulse(Pre_ON_pulse_time);        //вызываем процедуру мигания
+    led_Pulse(Pre_ON_pulse_time);        //вызываем процедуру мигания
   }while(digitalRead(Button_pin));      //пока на кнопке высокий уровень
   digitalWrite(LED_BUILTIN, OFF);       //гасим светодиод когда на кнопке низкий
 
