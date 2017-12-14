@@ -28,11 +28,14 @@ void led_Pulse(unsigned long pulse_time){        //процедура миган
 void led_count_Pulse(unsigned long pulse_count_time, unsigned int pulse_count){   //процедура мигания n раз 
   static unsigned long previousTime = 0;                    //переменная для хранения времени последнего переключения
   static unsigned int previousCount = 0;                    //переменная для хранения выполненных переключений
-  if(((millis() - previousTime) > pulse_count_time) && (previousCount < (pulse_count * 2))){ 
-	  previousCount = previousCount + 1;
-	  previousTime = millis();                  
-    digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN)); 
-  }
+  do {
+    if(((millis() - previousTime) > pulse_count_time)){ 
+      previousCount = previousCount + 1;
+      previousTime = millis();                  
+      digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN)); 
+    } 
+  }while (previousCount < (pulse_count * 2));
+  previousCount = 0;
 }
 
 void loop() {
