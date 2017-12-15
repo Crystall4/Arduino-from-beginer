@@ -1,3 +1,6 @@
+#define clock_cpu_down {CLKPR = 1<<CLKPCE;CLKPR = 8;}
+#define clock_cpu_up   {CLKPR = 1<<CLKPCE;CLKPR = 0;}
+
 #define ON HIGH          //включено
 #define OFF LOW         //выключено
 
@@ -10,6 +13,8 @@
 #define FREE   LOW  //отпущена
 
 #define Button_pin 8   //нога для кнопки
+
+boolean cpu_up=true;
 
 void setup() {
   //инициализируем порты для светодиода и кнопки.
@@ -38,10 +43,33 @@ void led_count_Pulse(unsigned long pulse_count_time, unsigned int pulse_count){ 
   previousCount = 0;
 }
 
+
+//===============================Реализация состояний================================================================
+byte P_OFF(){
+  digitalWrite(LED_BUILTIN,LOW);
+  if (cpu_up) {
+    clock_cpu_down; //снижаем частоту МК до 62.5 кГц
+    cpu_up=false;
+  }
+  return digitalRead(Button_pin);
+}
+
+byte P_Pre_ON_pulse(){
+  if (!cpu_up) {
+    clock_cpu_up; //Возвращаем частоту МК на 16 МГц
+    cpu_up=true;
+  }
+  led_Pulse(Pre_ON_pulse_time);
+  return !digitalRead(Button_pin);
+}
+
+
+//====================================================================================================================
 void loop() {
   do{
-    led_Pulse(Pre_ON_pulse_time);        //вызываем процедуру мигания
+    P_Pre_ON_pulse();                    //вызываем обработчик S_Pre_ON
   }while(digitalRead(Button_pin));      //пока на кнопке высокий уровень
-  digitalWrite(LED_BUILTIN, OFF);       //гасим светодиод когда на кнопке низкий
+  
+  P_OFF(); //пока кнопка свободна гасим все и ложимся спать     
 
 }
