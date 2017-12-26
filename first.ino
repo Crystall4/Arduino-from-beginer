@@ -23,7 +23,7 @@ boolean cpu_up=true;
 
 void setup() {
   //инициализируем порты для светодиода и кнопки.
-  pinMode(Led_Pin, OUTPUT);     //LED_BUILTIN константа ардуино библиотеки равная 13 для nano и некоторых других плат
+  pinMode(Led_Pin, OUTPUT);     
   pinMode(Button_pin, INPUT);
 }
 
