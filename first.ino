@@ -69,12 +69,15 @@ byte P_Pre_ON_pulse(){
 }
 
 byte P_ON(){
-	return digitalRead(buttonPin);
+	digitalWrite(LED_BUILTIN, ON);
+	return digitalRead(Button_pin);
 }
 byte P_Post_ON_pulse(){
-	return !digitalRead(buttonPin);
+	ledPulse(Post_ON_pulse_time);
+	return !digitalRead(Button_pin);
 }
 byte P_Pre_OFF_pulse(){
+	led_count_Pulse(Pre_OFF_pulse_time, Pre_OFF_pulse_count);
 	return switch_off;
 }
 
