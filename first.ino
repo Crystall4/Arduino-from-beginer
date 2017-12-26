@@ -4,6 +4,12 @@
 #define ON HIGH          //включено
 #define OFF LOW         //выключено
 
+#define S_OFF 0       //состояние выключено
+#define S_Pre_ON_pulse 1        //состояние когда светодиод выключен и нажали кнопку
+#define S_ON 2        //состояние после отпускания кнопки, светодиод горит
+#define S_Post_ON_pulse 3       //состояние после нажатия кнопки при включеном светодиоде, должен быстро моргать
+#define S_Pre_OFF_pulse 4       //состояние после отпускания кнопки, должен поморгать 10 раз и выключиться
+
 #define Pre_ON_pulse_time 1000     //Когда светодиод выключен и кнопка нажата
 #define Post_ON_pulse_time 500    //время моргания когда кнопка нажата и диод горит
 #define Pre_OFF_pulse_time 500   //время моргания когда отпустили кнопку, должен 10 раз моргнуть и выключиться
@@ -13,10 +19,12 @@
 #define FREE   LOW  //отпущена
 
 #define Button_pin 8   //нога для кнопки
-#define Led_Pin 13 		//светодиод
+#define Led_Pin 13    //светодиод
 
-#define prolong 0				//признак продолжения
-#define switch_off 1	 //признак переключения
+#define prolong 0       //признак продолжения
+#define switch_off 1   //признак переключения
+
+
 
 
 boolean cpu_up=true;
@@ -69,16 +77,16 @@ byte P_Pre_ON_pulse(){
 }
 
 byte P_ON(){
-	digitalWrite(Led_Pin, ON);
-	return digitalRead(Button_pin);
+  digitalWrite(Led_Pin, ON);
+  return digitalRead(Button_pin);
 }
 byte P_Post_ON_pulse(){
-	ledPulse(Post_ON_pulse_time);
-	return !digitalRead(Button_pin);
+  led_Pulse(Post_ON_pulse_time);
+  return !digitalRead(Button_pin);
 }
 byte P_Pre_OFF_pulse(){
-	led_count_Pulse(Pre_OFF_pulse_time, Pre_OFF_pulse_count);
-	return switch_off;
+  led_count_Pulse(Pre_OFF_pulse_time, Pre_OFF_pulse_count);
+  return switch_off;
 }
 
 //====================================================================================================================
