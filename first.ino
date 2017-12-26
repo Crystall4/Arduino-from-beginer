@@ -1,5 +1,5 @@
-#define clock_cpu_down {CLKPR = 1<<CLKPCE;CLKPR = 8;}
-#define clock_cpu_up   {CLKPR = 1<<CLKPCE;CLKPR = 0;}
+#define clock_cpu_down {CLKPR = 1<<CLKPCE;CLKPR = 8;}   //уменьшаем частоту и энерго потребление
+#define clock_cpu_up   {CLKPR = 1<<CLKPCE;CLKPR = 0;}  //возвращаем как было
 
 #define ON HIGH          //включено
 #define OFF LOW         //выключено
@@ -13,12 +13,17 @@
 #define FREE   LOW  //отпущена
 
 #define Button_pin 8   //нога для кнопки
+#define Led_Pin 13 		//светодиод
+
+#define prolong 0				//признак продолжения
+#define switch_off 1	 //признак переключения
+
 
 boolean cpu_up=true;
 
 void setup() {
   //инициализируем порты для светодиода и кнопки.
-  pinMode(LED_BUILTIN, OUTPUT);     //LED_BUILTIN константа ардуино библиотеки равная 13 для nano и некоторых других плат
+  pinMode(Led_Pin, OUTPUT);     //LED_BUILTIN константа ардуино библиотеки равная 13 для nano и некоторых других плат
   pinMode(Button_pin, INPUT);
 }
 
@@ -26,7 +31,7 @@ void led_Pulse(unsigned long pulse_time){        //процедура миган
   static unsigned long previousTime = 0;        //переменная для хранения времени последнего переключения
   if(millis() - previousTime > pulse_time) {    //если с последнего переключения прошло больше времени чем передано в параметре:
       previousTime = millis();                  //сохраняем текущее время как время последнего переключения    
-      digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));  //и реверсируем состояние светодиода
+      digitalWrite(Led_Pin, !digitalRead(Led_Pin));  //и реверсируем состояние светодиода
   }
 }
 
@@ -37,7 +42,7 @@ void led_count_Pulse(unsigned long pulse_count_time, unsigned int pulse_count){ 
     if(((millis() - previousTime) > pulse_count_time)){ 
       previousCount = previousCount + 1;
       previousTime = millis();                  
-      digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN)); 
+      digitalWrite(Led_Pin, !digitalRead(Led_Pin)); 
     } 
   }while (previousCount < (pulse_count * 2));
   previousCount = 0;
@@ -46,7 +51,7 @@ void led_count_Pulse(unsigned long pulse_count_time, unsigned int pulse_count){ 
 
 //===============================Реализация состояний================================================================
 byte P_OFF(){
-  digitalWrite(LED_BUILTIN,LOW);
+  digitalWrite(Led_Pin,LOW);
   if (cpu_up) {
     clock_cpu_down; //снижаем частоту МК до 62.5 кГц
     cpu_up=false;
