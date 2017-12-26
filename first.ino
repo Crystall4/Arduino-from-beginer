@@ -68,6 +68,15 @@ byte P_Pre_ON_pulse(){
   return !digitalRead(Button_pin);
 }
 
+byte P_ON(){
+	return digitalRead(buttonPin);
+}
+byte P_Post_ON_pulse(){
+	return !digitalRead(buttonPin);
+}
+byte P_Pre_OFF_pulse(){
+	return switch_off;
+}
 
 //====================================================================================================================
 void loop() {
