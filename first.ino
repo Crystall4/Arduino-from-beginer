@@ -12,8 +12,8 @@
 
 #define Pre_ON_pulse_time 1000     //Когда светодиод выключен и кнопка нажата
 #define Post_ON_pulse_time 500    //время моргания когда кнопка нажата и диод горит
-#define Pre_OFF_pulse_time 500   //время моргания когда отпустили кнопку, должен 10 раз моргнуть и выключиться
-#define Pre_OFF_pulse_count 10  //количество вспышек перед выключением 
+#define Pre_OFF_pulse_time 1000   //время моргания когда отпустили кнопку, должен 10 раз моргнуть и выключиться
+#define Pre_OFF_pulse_count 25  //количество вспышек перед выключением 
 
 #define PRESS HIGH   //нажата
 #define FREE   LOW  //отпущена
@@ -91,10 +91,25 @@ byte P_Pre_OFF_pulse(){
 
 //====================================================================================================================
 void loop() {
-  do{
-    P_Pre_ON_pulse();                    //вызываем обработчик S_Pre_ON
-  }while(digitalRead(Button_pin));      //пока на кнопке высокий уровень
-  
-  P_OFF(); //пока кнопка свободна гасим все и ложимся спать     
-
+  static byte Current_State=S_OFF;
+  switch (Current_State) {
+    case S_OFF:
+      Current_State = Current_State + P_OFF();
+      break;
+    case S_Pre_ON_pulse:
+      Current_State = Current_State + P_Pre_ON_pulse();
+      break;
+    case S_ON:
+      Current_State = Current_State + P_ON();
+      break;
+    case S_Post_ON_pulse:
+      Current_State = Current_State + P_Post_ON_pulse();
+      break;
+    case S_Pre_OFF_pulse:
+      Current_State = Current_State + P_Pre_OFF_pulse();
+      break;
+    default:
+     Current_State=S_OFF;
+     break;
+  }
 }
